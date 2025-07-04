@@ -1,12 +1,18 @@
-﻿namespace TablesOutputSDA
+﻿using Microsoft.Data.SqlClient;
+
+namespace TablesOutputSDA
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-
             // Create a new table using SqlCommand , Insert Data and Select using SqlDataAdapter
-            Console.WriteLine("Hello, World!");
+
+            string connectionString = """
+                Data Source =.; Initial Catalog = TestDB; User ID = sa; Encrypt = False
+                """;
+
+            SqlConnection connection = new SqlConnection(connectionString);
         }
     }
 }
