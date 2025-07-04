@@ -42,17 +42,38 @@ namespace TablesOutputSDA
                 ('Bob', 'Manager'),
                 ('Charlie', 'Designer');
                 """;
+            string insertCustomers = """
+                INSERT INTO Customers (Name, Address) VALUES
+                ('David', '123 Elm St'),
+                ('Eve', '456 Oak St'),
+                ('Frank', '789 Pine St');
+                """;
 
             DataSet dataSet = new DataSet();
             SqlDataAdapter dataAdapterInsertEmployees = new SqlDataAdapter(insertEmployees , connection);
-            
-            SqlDataAdapter dataAdapterSelectEmployees = new SqlDataAdapter("SELECT * FROM Employees", connection);
-            dataAdapterSelectEmployees.Fill(dataSet, "Employees");
+            SqlDataAdapter dataAdapterInsertCustomers = new SqlDataAdapter(insertCustomers, connection);
+
+            SqlDataAdapter dataAdapterSelect = new SqlDataAdapter("""
+                SELECT * FROM Employees; SELECT * FROM Customers;
+                """, connection);
+
+            dataAdapterInsertEmployees.Fill(dataSet);   // Only Run this one time to insert data into dataset
+            dataAdapterInsertCustomers.Fill(dataSet);   // Only Run this one time to insert data into dataset
+
+
+            dataAdapterSelect.Fill(dataSet);
+            dataSet.Tables[0].TableName = "Employees";
+            dataSet.Tables[1].TableName = "Customers";
             Thread.Sleep(1000); // Wait for the table to be created
             foreach (DataRow row in dataSet.Tables["Employees"].Rows)
             {
                 Console.WriteLine($"{row["Id"]}, {row["Name"]}, {row["Position"]}");
-            }   
+            }
+            Console.WriteLine("--------------------------------------------------");
+            foreach(DataRow row in dataSet.Tables["Customers"].Rows)
+            {
+                Console.WriteLine($"{row["Id"]}, {row["Name"]}, {row["Address"]}");
+            }
         }
     }
 }
