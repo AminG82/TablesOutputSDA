@@ -13,7 +13,7 @@ namespace TablesOutputSDA
                 Data Source =.; Initial Catalog = TestDB; User ID = sa; Password = amin5123 ; Encrypt = False
                 """;
             SqlConnection connection = new SqlConnection(connectionString);
-            
+
 
             //SqlCommand CreateTableEmployees = new SqlCommand("""
             //    CREATE TABLE Employees (
@@ -37,20 +37,26 @@ namespace TablesOutputSDA
             //connection.Close();
 
             string insertEmployees = """
-                INSERT INTO Employees (Name, Position) VALUES
-                ('Alice', 'Developer'),
-                ('Bob', 'Manager'),
-                ('Charlie', 'Designer');
-                """;
+    IF NOT EXISTS (SELECT 1 FROM Employees WHERE Name = 'Alice')
+        INSERT INTO Employees (Name, Position) VALUES ('Alice', 'Developer');
+    IF NOT EXISTS (SELECT 1 FROM Employees WHERE Name = 'Bob')
+        INSERT INTO Employees (Name, Position) VALUES ('Bob', 'Manager');
+    IF NOT EXISTS (SELECT 1 FROM Employees WHERE Name = 'Charlie')
+        INSERT INTO Employees (Name, Position) VALUES ('Charlie', 'Designer');
+    """;
+
             string insertCustomers = """
-                INSERT INTO Customers (Name, Address) VALUES
-                ('David', '123 Elm St'),
-                ('Eve', '456 Oak St'),
-                ('Frank', '789 Pine St');
-                """;
+    IF NOT EXISTS (SELECT 1 FROM Customers WHERE Name = 'David')
+        INSERT INTO Customers (Name, Address) VALUES ('David', '123 Elm St');
+    IF NOT EXISTS (SELECT 1 FROM Customers WHERE Name = 'Eve')
+        INSERT INTO Customers (Name, Address) VALUES ('Eve', '456 Oak St');
+    IF NOT EXISTS (SELECT 1 FROM Customers WHERE Name = 'Frank')
+        INSERT INTO Customers (Name, Address) VALUES ('Frank', '789 Pine St');
+    """;
+
 
             DataSet dataSet = new DataSet();
-            SqlDataAdapter dataAdapterInsertEmployees = new SqlDataAdapter(insertEmployees , connection);
+            SqlDataAdapter dataAdapterInsertEmployees = new SqlDataAdapter(insertEmployees, connection);
             SqlDataAdapter dataAdapterInsertCustomers = new SqlDataAdapter(insertCustomers, connection);
 
             SqlDataAdapter dataAdapterSelect = new SqlDataAdapter("""
@@ -70,7 +76,7 @@ namespace TablesOutputSDA
                 Console.WriteLine($"{row["Id"]}, {row["Name"]}, {row["Position"]}");
             }
             Console.WriteLine("--------------------------------------------------");
-            foreach(DataRow row in dataSet.Tables["Customers"].Rows)
+            foreach (DataRow row in dataSet.Tables["Customers"].Rows)
             {
                 Console.WriteLine($"{row["Id"]}, {row["Name"]}, {row["Address"]}");
             }
