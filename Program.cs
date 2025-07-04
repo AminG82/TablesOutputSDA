@@ -52,9 +52,7 @@ namespace TablesOutputSDA
             foreach (DataRow row in dataSet.Tables["Employees"].Rows)
             {
                 Console.WriteLine($"{row["Id"]}, {row["Name"]}, {row["Position"]}");
-            }
-
-            // SqlCommandBuilder commandBuilder = new SqlCommandBuilder(dataAdapterInsertEmployees);
+            }   
         }
     }
 }
